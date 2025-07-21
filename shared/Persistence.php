@@ -1,5 +1,4 @@
 <?php
-include "./common.php";
 
 class Persistence {
   private $path;
@@ -44,7 +43,7 @@ class Persistence {
    */
   function create(mixed $data) {
     $stored_data = $this->read_data_file();
-    
+
     $id = $this->id();
 
     if ($stored_data === null) {

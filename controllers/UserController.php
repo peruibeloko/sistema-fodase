@@ -1,7 +1,6 @@
 <?php
-include "../models/UserModel.php";
-include "../shared/controller_setup.php";
-include "../shared/common.php";
+require __DIR__ . "/../models/UserModel.php";
+require __DIR__ . "/../shared/common.php";
 
 function parse_user(mixed $data) {
   return [
@@ -10,8 +9,8 @@ function parse_user(mixed $data) {
   ];
 }
 
-function create_user(mixed $body) {
-  return handle_error(User::save(parse_user($body)), 201);
+function create_user(mixed $data) {
+  return handle_error(User::save(parse_user($data)), 201);
 }
 
 function delete_user(string $id) {

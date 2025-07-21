@@ -1,6 +1,6 @@
 <?php
-include "../shared/common.php";
-include "../controllers/UserController.php";
+require __DIR__ . "/../../shared/route_setup.php";
+require __DIR__ . "/../../controllers/UserController.php";
 
 switch ($method) {
   case "POST":
@@ -8,6 +8,7 @@ switch ($method) {
   case "DELETE":
     return delete_user(param("id"));
   default:
+    http_response_code(501);
     send("Unsupported operation");
     break;
 }

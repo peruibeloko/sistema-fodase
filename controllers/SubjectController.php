@@ -1,13 +1,12 @@
 <?php
-include "../models/SubjectModel.php";
-include "../shared/controller_setup.php";
-include "../shared/common.php";
+require __DIR__ . "/../models/SubjectModel.php";
+require __DIR__ . "/../shared/common.php";
 
 function parse_topic(string $topic) {
-  if (!array_search($topic, Topic::cases())) {
+  if (!array_search($topic, enum_values(Topic::class))) {
     http_response_code(400);
-    return send("Invalid topic code (allowed codes are "
-      . join(", ", Topic::cases()) . ")");
+    $topics = join(", ", enum_values(Topic::class));
+    return send("Invalid topic code (allowed codes are $topics)");
   }
 
   return Topic::from($topic);
@@ -22,12 +21,12 @@ function parse_subject(mixed $data) {
   ];
 }
 
-function create_subject(mixed $body) {
-  return handle_error(Subject::save(parse_subject($body)), 201);
+function create_subject(mixed $data) {
+  return handle_error(Subject::save(parse_subject($data)), 201);
 }
 
-function replace_subject(int $id, mixed $body) {
-  return handle_error(Subject::replace($id, parse_subject($body)), 201);
+function replace_subject(int $id, mixed $data) {
+  return handle_error(Subject::replace($id, parse_subject($data)), 201);
 }
 
 function delete_subject(int $id) {

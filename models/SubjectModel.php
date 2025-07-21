@@ -1,14 +1,14 @@
 <?php
-include "../shared/Persistence.php";
+require __DIR__ . "/../shared/Persistence.php";
 
 const REPO = "subject";
 
 enum Topic: string {
-  case INOV = "Inovação";
-  case TECH = "Tecnologia";
-  case MKTN = "Marketing";
-  case EMPR = "Empreendedorismo";
-  case AGRO = "Agronegócio";
+  case INOV = "INOV";
+  case TECH = "TECH";
+  case MKTN = "MKTN";
+  case EMPR = "EMPR";
+  case AGRO = "AGRO";
 }
 
 class Subject {

@@ -1,11 +1,11 @@
 <?php
-include "../shared/Persistence.php";
+require __DIR__ . "/../shared/Persistence.php";
 
 const REPO = "group";
 
 enum Status: string {
-  case AVAILABLE = "Disponível";
-  case FINISHED = "Encerrado";
+  case AVAILABLE = "AVAILABLE";
+  case FINISHED = "FINISHED";
 }
 
 class Group {

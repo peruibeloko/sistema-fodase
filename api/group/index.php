@@ -1,6 +1,6 @@
 <?php
-include "../shared/common.php";
-include "../controllers/GroupController.php";
+require __DIR__ . "/../../shared/route_setup.php";
+require __DIR__ . "/../../controllers/GroupController.php";
 
 switch ($method) {
   case "POST":

@@ -1,9 +1,9 @@
 <?php
 require __DIR__ . "/../shared/Persistence.php";
 
-const REPO = "user";
+const REPO = "register";
 
-class User {
+class Register {
   static function save(mixed $data) {
     return (new Persistence(REPO))->create($data);
   }

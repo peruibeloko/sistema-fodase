@@ -53,3 +53,7 @@ function handle_error(mixed $result, int $success_code) {
   http_response_code($success_code);
   return send($result);
 }
+
+function enum_values(mixed $enum) {
+  return array_map(fn($x) => $x->name, $enum::cases());
+}

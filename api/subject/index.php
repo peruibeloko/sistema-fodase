@@ -1,6 +1,6 @@
 <?php
-include "../shared/common.php";
-include "../controllers/SubjectController.php";
+require __DIR__ . "/../../shared/route_setup.php";
+require __DIR__ . "/../../controllers/SubjectController.php";
 
 switch ($method) {
   case "POST":
