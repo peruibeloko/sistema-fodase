@@ -1,5 +1,5 @@
 <?php
-include "../common.php";
+include "../shared/common.php";
 include "../controllers/SubjectController.php";
 
 switch ($method) {

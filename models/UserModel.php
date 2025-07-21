@@ -1,5 +1,5 @@
 <?php
-include "../Persistence.php";
+include "../shared/Persistence.php";
 
 const REPO = "user";
 
