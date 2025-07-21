@@ -1,87 +1,35 @@
 <?php
 include "../models/SubjectModel.php";
+include "../shared/controller_setup.php";
+include "../shared/common.php";
 
-function get_valid_topic(string $topic) {
+function parse_topic(string $topic) {
   if (!array_search($topic, Topic::cases())) {
-    return false;
+    http_response_code(400);
+    return send("Invalid topic code (allowed codes are "
+      . join(", ", Topic::cases()) . ")");
   }
 
   return Topic::from($topic);
 }
 
+function parse_subject(mixed $data) {
+  return [
+    "title" => parse_string($data["title"], "title"),
+    "description" => parse_string($data["description"], "description"),
+    "topic" => parse_topic($data["topic"]),
+    "image_url" => parse_string($data["image_url"], "image_url"),
+  ];
+}
+
 function create_subject(mixed $body) {
-  [
-    'title' => $title,
-    'description' => $description,
-    'topic' => $topic,
-    'image_url' => $image_url,
-  ] = $body;
-
-  $valid_topic = get_valid_topic($topic);
-
-  if ($valid_topic === false) {
-    http_response_code(400);
-    return send("Invalid topic code (allowed codes are "
-      . join(", ", Topic::cases()) . ")");
-  }
-
-  $result = Subject::save(
-    $title,
-    $description,
-    $valid_topic,
-    $image_url
-  );
-
-  if ($result === false) {
-    http_response_code(500);
-    return send("Error persisting data");
-  }
-
-  http_response_code(201);
-  return send($result);
+  return handle_error(Subject::save(parse_subject($body)), 201);
 }
 
 function replace_subject(int $id, mixed $body) {
-  [
-    'title' => $title,
-    'description' => $description,
-    'topic' => $topic,
-    'image_url' => $image_url,
-  ] = $body;
-
-  $valid_topic = get_valid_topic($topic);
-
-  if ($valid_topic === false) {
-    http_response_code(400);
-    return send("Invalid topic code (allowed codes are "
-      . join(", ", Topic::cases()) . ")");
-  }
-
-  $result = Subject::replace(
-    $id,
-    $title,
-    $description,
-    $valid_topic,
-    $image_url
-  );
-
-  if ($result === false) {
-    http_response_code(500);
-    return send("Error persisting data");
-  }
-
-  http_response_code(201);
-  return send($result);
+  return handle_error(Subject::replace($id, parse_subject($body)), 201);
 }
 
 function delete_subject(int $id) {
-  $result = Subject::delete($id);
-
-  if ($result === false) {
-    http_response_code(500);
-    return send("Error persisting data");
-  }
-
-  http_response_code(204);
-  return send(null);
+  return handle_error(Subject::delete($id), 204);
 }

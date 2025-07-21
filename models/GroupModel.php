@@ -4,33 +4,19 @@ include "../shared/Persistence.php";
 const REPO = "group";
 
 enum Status: string {
-  case AVAILABLE = 'Disponível';
-  case FINISHED = 'Encerrado';
+  case AVAILABLE = "Disponível";
+  case FINISHED = "Encerrado";
 }
 
 class Group {
   static function save(
-    ...$data
+    $data
   ) {
-    return (new Persistence(REPO))->create([
-      'title' => $data["title"],
-      'description' => $data["description"],
-      'status' => $data["status"],
-      'seats' => $data["seats"],
-      'start_date' => $data["start_date"],
-      'end_date' => $data["end_date"],
-    ]);
+    return (new Persistence(REPO))->create($data);
   }
 
-  static function replace($id, ...$data) {
-    return (new Persistence(REPO))->replace($id, [
-      'title' => $data["title"],
-      'description' => $data["description"],
-      'status' => $data["status"],
-      'seats' => $data["seats"],
-      'start_date' => $data["start_date"],
-      'end_date' => $data["end_date"],
-    ]);
+  static function replace($id, $data) {
+    return (new Persistence(REPO))->replace($id, $data);
   }
 
   static function delete($id) {

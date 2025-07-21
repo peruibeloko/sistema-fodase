@@ -1,13 +1,20 @@
 <?php
+include "./common.php";
 
 class Persistence {
   private $path;
 
+  private function id() {
+    return bin2hex(random_bytes(16));
+  }
+
   function __construct(private $repo) {
-    $fullpath = __DIR__ . "/data";
+    $fullpath = __DIR__ . "/../data";
+
     if (!file_exists($fullpath)) {
       mkdir($fullpath);
     }
+
     $this->path = $fullpath;
   }
 
@@ -17,12 +24,14 @@ class Persistence {
 
   private function read_data_file() {
     if (!file_exists($this->data_file())) {
-      $result = file_put_contents($this->data_file(), json_encode([]));
+      $result = file_put_contents($this->data_file(), "");
+
       if ($result === false) {
         return false;
       }
     }
-    return json_decode(file_get_contents($this->data_file()));
+
+    return json_decode(file_get_contents($this->data_file()), true);
   }
 
   private function write_data_file(mixed $data) {
@@ -31,30 +40,35 @@ class Persistence {
 
   /** Creates a new entry in the repo data file
    * @param mixed $data The value to write
-   * @return mixed The new entry's ID (index), or `false` on faliure
+   * @return mixed The new entry"s ID, or `false` on faliure
    */
   function create(mixed $data) {
     $stored_data = $this->read_data_file();
+    
+    $id = $this->id();
 
-    if ($stored_data === false) {
-      $result = $this->write_data_file([$data]);
+    if ($stored_data === null) {
+      $result = $this->write_data_file([$id => $data]);
+
       if ($result === false) {
         return false;
       }
-      return 0;
+
+      return $id;
     }
 
-    $current_size = count($stored_data);
-    $new_data = [...$stored_data, $data];
+    $new_data = [...$stored_data, $id => $data];
     $result = $this->write_data_file($new_data);
+
     if ($result == false) {
       return false;
     }
-    return $current_size;
+
+    return $id;
   }
 
   /** Reads an entry from the datafile
-   * @param int $id The entry index
+   * @param int $id The entry ID
    * @return mixed Either the entry on success or `null` otherwise
    */
   function read(int $id) {
@@ -72,7 +86,7 @@ class Persistence {
   }
 
   /** Replaces an entry in the datafile
-   * @param int $id The entry index
+   * @param int $id The entry ID
    * @param mixed $data The new entry data
    * @return boolean If the operation succeded
    */
@@ -89,29 +103,33 @@ class Persistence {
 
     $stored_data[$id] = $data;
     $this->write_data_file($stored_data);
+
     return true;
   }
 
   /** Removes an entry from the datafile
-   * @param int $id The entry index
+   * @param string $id The entry ID
    * @return boolean If the operation succeded
    */
-  function delete(int $id) {
+  function delete(string $id) {
     $stored_data = $this->read_data_file();
 
     if ($stored_data === false) {
       return false;
     }
 
-    if ($id >= count($stored_data)) {
+    if ($stored_data[$id] === null) {
       return false;
     }
 
-    $new_data = [...array_slice($stored_data, 0, $id), ...array_slice($stored_data, $id)];
+    $not_id = fn($k) => $k !== $id;
+    $new_data = array_filter($stored_data, $not_id, ARRAY_FILTER_USE_KEY);
     $result = $this->write_data_file($new_data);
+
     if ($result === false) {
       return false;
     }
+
     return true;
   }
 }

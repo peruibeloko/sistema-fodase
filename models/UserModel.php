@@ -4,8 +4,8 @@ include "../shared/Persistence.php";
 const REPO = "user";
 
 class User {
-  static function save(string $name, string $email) {
-    return (new Persistence(REPO))->create(['name' => $name, 'email' => $email]);
+  static function save(mixed $data) {
+    return (new Persistence(REPO))->create($data);
   }
 
   static function delete($id) {
