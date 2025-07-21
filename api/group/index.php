@@ -1,15 +1,22 @@
 <?php
-require __DIR__ . "/../../shared/route_setup.php";
-require __DIR__ . "/../../controllers/GroupController.php";
+require_once __DIR__ . "/../../shared/route_setup.php";
+require_once __DIR__ . "/../../controllers/GroupController.php";
 
 switch ($method) {
+  case "GET":
+    $topic = param("topic");
+    return list_groups($topic);
   case "POST":
-    return create_group(body());
+    $body = body();
+    return create_group($body);
   case "PUT":
-    return replace_group(param("id"), body());
+    $id = param("id");
+    $body = body();
+    return replace_group($id, $body);
   case "DELETE":
     return delete_group(param("id"));
   default:
+    http_response_code(501);
     send("Unsupported operation");
     break;
 }

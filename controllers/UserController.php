@@ -1,18 +1,27 @@
 <?php
-require __DIR__ . "/../models/UserModel.php";
-require __DIR__ . "/../shared/common.php";
+require_once __DIR__ . "/../models/UserModel.php";
+require_once __DIR__ . "/../models/SubjectModel.php";
 
-function parse_user(mixed $data) {
-  return [
-    "name" => parse_string($data["name"], "Please provide a valid name"),
-    "email" => parse_string($data["email"], "Please provide a valid email")
-  ];
+function get_or_list_users(string|null $id) {
+  return handle_error(User::read($id), 200);
 }
 
 function create_user(mixed $data) {
-  return handle_error(User::save(parse_user($data)), 201);
+  return handle_error(User::save(User::parse($data)), 201);
 }
 
 function delete_user(string $id) {
   return handle_error(User::delete($id), 204);
+}
+
+function list_subjects(string $id) {
+  $result = Subject::list_subjects($id);
+
+  if ($result === null) {
+    http_response_code(204);
+    return send("");
+  }
+
+  http_response_code(200);
+  return send($result);
 }
